@@ -8,7 +8,7 @@ func CreateNibble(N1 byte) byte {
 	return N1
 }
 
-//CreateNibbleMerged - Creates a nibble by using 2 bytes (0-15) and merging into byte for space savings in arrays, can be separated with ReadNibbles()
+//CreateNibbleMerged - Creates a merged nibble by using 2 bytes (0-15) and merging into byte for space savings in arrays, can be separated with ReadNibbles()
 func CreateNibbleMerged(N1 byte, N2 byte) byte {
 	//prevent values over 15 and correct them to the highest value
 	if N1 > 15 {
