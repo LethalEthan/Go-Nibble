@@ -1,5 +1,7 @@
 package nibble
 
+//Note: replace Arrays with Slices, the term Array is used incorrectly here these are Slices not Arrays
+
 //CreateNibble - Creates a nibble by using half a byte that can be merged with another nibble later
 func CreateNibble(N1 byte) byte {
 	if N1 > 15 {
@@ -8,7 +10,7 @@ func CreateNibble(N1 byte) byte {
 	return N1
 }
 
-//CreateNibbleMerged - Creates a merged nibble by using 2 bytes (0-15) and merging into byte for space savings in arrays, can be separated with ReadNibbles()
+//CreateNibbleMerged - Creates a nibble by using 2 bytes (0-15) and merging into byte for space savings in arrays, can be separated with ReadNibbles()
 func CreateNibbleMerged(N1 byte, N2 byte) byte {
 	//prevent values over 15 and correct them to the highest value
 	if N1 > 15 {
@@ -73,4 +75,39 @@ func MergeNibbles(N1 byte, N2 byte) byte {
 	N1 = N1 << 4
 	N3 := N1 | N2
 	return N3
+}
+
+//CompactByteArray - runs through whole array and merges bytes into nibbles
+func CompactByteArray(Array []byte) []byte {
+	var j = 0
+	//If array length is odd
+	if len(Array)%2 != 0 {
+		Length := (len(Array) - 1) / 2
+		var NewArray = make([]byte, Length+1)
+		for i := 0; i < Length; i++ {
+			NewArray[i] = CreateNibbleMerged(Array[j], Array[j+1])
+			j += 2
+		}
+		NewArray[len(NewArray)-1] = CreateNibbleMerged(Array[len(Array)-1], 0) //Add last number by creting merged nibble with 0
+		return NewArray
+	}
+	//If Array length is even
+	var NewArray = make([]byte, len(Array)/2)
+	for i := 0; i < len(NewArray); i++ {
+		NewArray[i] = CreateNibbleMerged(Array[j], Array[j+1])
+		j += 2
+	}
+	return NewArray
+}
+
+//UncompactByteArray - runs through nibble array and unmerges the nibbles into bytes
+func UncompactByteArray(Array []byte) []byte {
+	var NewArray = make([]byte, len(Array)*2)
+	var j = 0
+	for i := 0; i < len(Array); i++ {
+		NewArray[j] = ReadNibble1(Array[i])
+		NewArray[j+1] = ReadNibble2(Array[i])
+		j += 2
+	}
+	return NewArray
 }
